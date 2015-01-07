@@ -38,7 +38,7 @@ module Code
 end
 
 module Ansi
-  class Clock
+  class ClockBase
     def activate()
       puts Code.save << Code.cursor_hide
       
@@ -56,6 +56,8 @@ module Ansi
       loop do
         @time = @meg.pop
 
+        print Code.clear_screen << Code.cursor_top
+        
         show
       end
     end
@@ -65,32 +67,23 @@ module Ansi
       @update_thread.join
       
       puts Code.restore << Code.cursor_show
-      # p Thread::list.size #=> 1
     end
 
     protected
     def show
-      puts Code.clear_screen
-      puts Code.cursor_top << "#{@time}"
+      puts "#{@time}"
     end
   end
 
-  class DigiClock < Clock
+  class Clock < ClockBase
     protected
     def show
-      puts to_string
-    end
+      f = -> (n) { sprintf("%02d", n) }
+      h = f.call @time.hour
+      m = f.call @time.min
+      s = f.call @time.sec
 
-    private
-    def to_string
-      to_s_f02d = -> (n) { "#{n}".length == 2 ? "#{n}" : "0#{n}" }
-      
-      hour   = to_s_f02d.call @time.hour
-      min    = to_s_f02d.call @time.min
-      sec    = to_s_f02d.call @time.sec
-      spacer = " : "
-      
-      return hour << spacer << min << spacer << sec
+      puts "#{h} : #{m} : #{s}"
     end
   end
 end

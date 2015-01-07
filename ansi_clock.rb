@@ -1,10 +1,7 @@
 require 'term/ansicolor'
 
-class Color
-  extend Term::ANSIColor
-end
-
 module Code
+  extend Term::ANSIColor
   extend self
   
   def save
@@ -83,7 +80,7 @@ module Ansi
       m = f.call @time.min
       s = f.call @time.sec
 
-      puts "#{h} : #{m} : #{s}"
+      puts Code.red + "#{h} : #{m} : #{s}"
     end
   end
 end
